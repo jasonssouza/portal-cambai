@@ -1,0 +1,47 @@
+import { prisma } from "@/lib/prisma";
+import { NextRequest, NextResponse } from "next/server";
+import { getToken } from "next-auth/jwt";
+
+const secret = process.env.NEXTAUTH_SECRET;
+
+export async function GET(req: NextRequest) {
+  const token = await getToken({ req, secret });
+  if (!token?.email) {
+    return NextResponse.json({ message: "Não autenticado" }, { status: 401 });
+  }
+
+  const produtos = await prisma.produto.findMany({
+    where: {
+      user: {
+        email: token.email,
+      },
+    },
+  });
+
+  return NextResponse.json(produtos);
+}
+
+export async function POST(req: NextRequest) {
+  const token = await getToken({ req, secret });
+  if (!token?.email) {
+    return NextResponse.json({ message: "Não autenticado" }, { status: 401 });
+  }
+
+  const body = await req.json();
+  const { nome, descricao, preco } = body;
+
+  const user = await prisma.user.findUnique({
+    where: { email: token.email },
+  });
+
+  const novoProduto = await prisma.produto.create({
+    data: {
+      nome,
+      descricao,
+      preco,
+      userId: user!.id,
+    },
+  });
+
+  return NextResponse.json(novoProduto);
+}

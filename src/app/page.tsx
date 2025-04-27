@@ -1,4 +1,4 @@
-import Image from "next/image";
+/*import Image from "next/image";
 
 export default function Home() {
   return (
@@ -100,4 +100,36 @@ export default function Home() {
       </footer>
     </div>
   );
+}*/
+
+"use client";
+
+import { signIn } from "next-auth/react";
+
+export default function HomePage() {
+  return (
+    <div className="flex min-h-screen items-center justify-center flex-col bg-black text-white p-4">
+      <h1 className="text-4xl font-bold mb-6">Portal Cambaí</h1>
+      <p className="text-lg mb-8">Faça login para acessar o painel de vendedor.</p>
+
+      <div className="flex flex-col gap-4 w-full max-w-xs">
+        <button
+          onClick={() => signIn("google")}
+          className="bg-blue-600 hover:bg-blue-700 text-white py-2 rounded"
+        >
+          Entrar com Google
+        </button>
+
+        <button
+          onClick={() => signIn("credentials")}
+          className="bg-green-600 hover:bg-green-700 text-white py-2 rounded"
+        >
+          Entrar com E-mail e Senha
+        </button>
+      </div>
+    </div>
+  );
 }
+
+
+
