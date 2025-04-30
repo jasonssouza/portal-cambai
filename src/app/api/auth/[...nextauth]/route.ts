@@ -18,18 +18,24 @@ const handler = NextAuth({
         email: { label: "E-mail", type: "email" },
         password: { label: "Senha", type: "password" },
       },
+
       async authorize(credentials) {
         const user = await prisma.user.findUnique({
           where: { email: credentials?.email },
+          select: {
+            id: true,
+            nome: true,
+            email: true,
+            password: true,
+          },
         });
 
         if (!user || !credentials?.password) return null;
 
-        const isValid = await compare(credentials.password, user.password || "");
-
+        const isValid = await compare(credentials.password, user.password);
         if (!isValid) return null;
-
-        return user;
+        const { password, ...safeUser } = user;
+        return safeUser;
       },
     }),
   ],
@@ -39,7 +45,7 @@ const handler = NextAuth({
   callbacks: {
     async session({ session, token }) {
       if (session?.user) {
-        session.user.id = token.sub!;
+        session.user.id = Number(token.sub);
       }
       return session;
     },
