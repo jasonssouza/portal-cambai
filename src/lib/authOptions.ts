@@ -26,7 +26,7 @@ export const authOptions: NextAuthOptions = {
             nome: true,
             email: true,
             password: true,
-          },
+          }as any,
         });
 
         if (!user || !credentials?.password) return null;
