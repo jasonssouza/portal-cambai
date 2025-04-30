@@ -29,7 +29,7 @@ export default function LoginPage() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="p-2 rounded border text-black"
+          className="p-2 rounded border text-white bg-zinc-900 placeholder-gray-400"
         />
 
         <input
@@ -38,7 +38,7 @@ export default function LoginPage() {
           value={senha}
           onChange={(e) => setSenha(e.target.value)}
           required
-          className="p-2 rounded border text-black"
+          className="p-2 rounded border text-white bg-zinc-900 placeholder-gray-400"
         />
 
         <button type="submit" className="bg-green-600 hover:bg-green-700 text-white py-2 rounded">

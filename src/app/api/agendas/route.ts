@@ -34,6 +34,10 @@ export async function POST(req: NextRequest) {
     where: { email: token.email },
   });
 
+  if (!user) {
+    return NextResponse.json({ message: "Usuário não encontrado" }, { status: 404 });
+  }
+  
   const novaAgenda = await prisma.agenda.create({
     data: {
       data: new Date(data),

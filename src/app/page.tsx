@@ -104,32 +104,64 @@ export default function Home() {
 
 "use client";
 
-import { signIn } from "next-auth/react";
+import { useState } from "react";
+import axios from "axios";
+import { redirect } from "next/navigation";
 
 export default function HomePage() {
+  const [nome, setNome] = useState("");
+
+  const buscarVendedor = async () => {
+    if (!nome) return;
+
+    try {
+      const res = await axios.get(`/api/public/find-vendedor?nome=${encodeURIComponent(nome)}`);
+      const vendedor = res.data;
+
+      if (vendedor && vendedor.id) {
+        window.location.href = `/vendedor/${vendedor.id}`;
+      } else {
+        alert("Vendedor não encontrado.");
+      }
+    } catch (err) {
+      alert("Erro ao buscar vendedor.");
+    }
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center flex-col bg-black text-white p-4">
-      <h1 className="text-4xl font-bold mb-6">Portal Cambaí</h1>
-      <p className="text-lg mb-8">Faça login para acessar o painel de vendedor.</p>
+    <div className="flex flex-col min-h-screen items-center justify-center bg-black text-white gap-6 p-6">
+      <h1 className="text-3xl font-bold">Portal Cambaí</h1>
+      <p className="text-lg">Acesse como vendedor ou visualize produtos como cliente.</p>
 
-      <div className="flex flex-col gap-4 w-full max-w-xs">
+      <div className="flex gap-4">
         <button
-          onClick={() => signIn("google")}
-          className="bg-blue-600 hover:bg-blue-700 text-white py-2 rounded"
+          onClick={() => (window.location.href = "/login")}
+          className="bg-blue-600 px-4 py-2 rounded text-white hover:bg-blue-700"
         >
-          Entrar com Google
+          Área do Vendedor
         </button>
+      </div>
 
+      <div className="mt-8 flex flex-col items-center">
+        <h2 className="text-xl mb-2">Área do Cliente</h2>
+        <input
+          placeholder="Nome do Vendedor"
+          value={nome}
+          onChange={(e) => setNome(e.target.value)}
+          className="p-2 rounded border text-white bg-zinc-900 placeholder-gray-400 mb-3"
+        />
         <button
-          onClick={() => signIn("credentials")}
-          className="bg-green-600 hover:bg-green-700 text-white py-2 rounded"
+          onClick={buscarVendedor}
+          className="bg-green-600 px-4 py-2 rounded text-white hover:bg-green-700"
         >
-          Entrar com E-mail e Senha
+          Ver Página do Vendedor
         </button>
       </div>
     </div>
   );
 }
+
+
 
 
 
