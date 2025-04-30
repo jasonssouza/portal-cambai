@@ -2,7 +2,6 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { prisma } from "@/lib/prisma";
-//import { PrismaAdapter } from "@auth/prisma-adapter";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { compare } from "bcryptjs";
 
@@ -39,7 +38,9 @@ const handler = NextAuth({
   },
   callbacks: {
     async session({ session, token }) {
-      session.user.id = token.sub;
+      if (session?.user) {
+        session.user.id = token.sub!;
+      }
       return session;
     },
   },
